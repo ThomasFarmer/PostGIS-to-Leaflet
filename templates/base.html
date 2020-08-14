@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Leaflet+PostGIS - proof of concept</title>
+          <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.css') }}">
+          <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">-->
+        <script src="{{ url_for('static', filename='js/leaflet-src.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery-3.2.0.min.js') }}"></script>
+        <style>
+            #mapdiv {
+                height:100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="side-bar" class="col-md-3"></div>
+        <div id="mapdiv" class="col-md-9"></div>
+        <script>
+
+            var mymap;
+            var lyrOSM;
+            var jsonfrompostgis = {% filter escape %} {{ jsonstuff|tojson }}  {% endfilter %} ;
+            var lofasz = {"type":"LineString","coordinates":[[16.2581823,48.3076625],[16.2583707,48.3077789],[16.2587029,48.3078694],[16.2588703,48.3079905],[16.2592138,48.3082898]]};
+
+            $(document).ready(function(){
+                mymap = L.map('mapdiv', {center:[48.3069986, 16.2568801], zoom:13});
+                lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+                mymap.addLayer(lyrOSM);
+
+                var myLayerStatic = L.geoJSON().addTo(mymap);
+                myLayerStatic.addData(lofasz);
+
+
+                console.log(jsonfrompostgis.length, typeof(jsonfrompostgis));
+                console.log(jsonfrompostgis);
+                console.log(jsonfrompostgis.length, typeof(jsonfrompostgis[0]));
+
+                var myLayerFromPostGIS = L.geoJSON().addTo(mymap);
+                myLayerFromPostGIS.addData(jsonfrompostgis[0]);
+
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+    </body>
+</html>
