@@ -1,13 +1,7 @@
-import sqlite3
 import psycopg2
-from os import path
-import uuid
-import hashlib
 
 class DbHandler():
     def __init__(self):
-
-
         try:
             self.conn = psycopg2.connect(
                 host="localhost",
@@ -28,7 +22,6 @@ class DbHandler():
         #     if conn is not None:
         #         conn.close()
         #         print('Database connection closed.')
-
 
     #@classmethod
     def get_stuff(self,tablename):
